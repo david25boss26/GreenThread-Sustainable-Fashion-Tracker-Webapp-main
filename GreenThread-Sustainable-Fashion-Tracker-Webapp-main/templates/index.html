@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#15803d">
+    <title>Sustainable Brands Analytics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-success">
+        <div class="container">
+            <span class="navbar-brand">
+                <i class="fas fa-leaf me-2"></i>
+                <strong>Sustainable Brands Analytics</strong>
+            </span>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-4">
+                <!-- Brand Selection Card -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            <i class="fas fa-search me-2 text-success"></i>
+                            Brand Explorer
+                        </h5>
+                        <div class="mb-4">
+                            <label class="form-label">Select Brand</label>
+                            <select class="form-select mb-3" id="brandSelect" name="brand">
+                                <option value="">Choose a brand...</option>
+                                {% for brand in brands %}
+                                    <option value="{{ brand.brand_name }}" 
+                                            {% if selected_brand == brand.brand_name %}selected{% endif %}>
+                                        {{ brand.brand_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-success w-100" 
+                                    onclick="redirectToCalculator()" 
+                                    id="calculatorBtn" 
+                                    disabled
+                                    style="background-color: #4ade80; border: none;">
+                                <i class="fas fa-calculator me-2"></i>
+                                Impact Calculator
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-chart-pie me-2"></i>
+                            Performance Metrics
+                        </h5>
+                        <div id="quickStats" class="d-none">
+                            <div class="stat-card">
+                                <div class="info-label">Market Performance</div>
+                                <div id="marketTrendBadge" class="mt-2"></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="info-label">Certifications</div>
+                                <div id="certificationsBadge" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-8">
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" class="loading-spinner">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+
+                <!-- Brand Details Card -->
+                <div id="brandDetails" class="card d-none fade-in">
+                    <div class="card-body">
+                        <h3 id="brandName" class="card-title mb-4"></h3>
+                        
+                        <div class="stat-row">
+                            <div class="stat-column">
+                                <div class="stat-card">
+                                    <div class="info-label">Brand Identifier</div>
+                                    <div class="stat-value">BRAND-2981</div>
+                                </div>
+                            </div>
+                            <div class="stat-column">
+                                <div class="stat-card">
+                                    <div class="info-label">Sustainability Rating</div>
+                                    <div class="sustainability-score score-high">78.29</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card bg-light border-0">
+                            <div class="card-body">
+                                <h6 class="card-title text-success mb-3">
+                                    <i class="fas fa-chart-line me-2"></i>
+                                    Detailed Analytics
+                                </h6>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tbody id="additionalInfo">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-success">
+                                            <i class="fas fa-sitemap me-2"></i>
+                                            Similar Brands
+                                        </h5>
+                                        <div id="similarBrandsContainer">
+                                            <!-- Similar brands will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#brandSelect').change(function() {
+                const selectedBrand = $(this).val();
+                if (selectedBrand) {
+                    $('#loadingSpinner').show();
+                    $('#brandDetails').addClass('d-none');
+                    $('#quickStats').addClass('d-none');
+
+                    fetch(`/api/brand/${encodeURIComponent(selectedBrand)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            $('#brandName').text(data.brand_name);
+                            $('#brandId').text(data.brand_id);
+                            
+                            const score = data.sustainability_score;
+                            let scoreClass = '';
+                            if (score >= 50) scoreClass = 'score-high';
+                            else if (score >= 25) scoreClass = 'score-medium';
+                            else scoreClass = 'score-low';
+                            
+                            $('.sustainability-score').html(
+                                `${score.toFixed(2)}`
+                            ).removeClass('score-high score-medium score-low').addClass(scoreClass);
+                            
+                            const trendColor = data.market_trend === 'Growing' ? 'success' : 
+                                             data.market_trend === 'Stable' ? 'primary' : 'warning';
+                            $('#marketTrendBadge').html(
+                                `<span class="badge bg-${trendColor}">${data.market_trend}</span>`
+                            );
+                            
+                            $('#certificationsBadge').html(
+                                `<span class="badge bg-info">${data.certifications}</span>`
+                            );
+                            
+                            const additionalInfo = $('#additionalInfo');
+                            additionalInfo.empty();
+                            
+                            const infoItems = [
+                                { 
+                                    icon: 'cube', 
+                                    label: 'Material Type', 
+                                    value: data.material_type,
+                                    format: (v) => v
+                                },
+                                { 
+                                    icon: 'industry', 
+                                    label: 'Manufacturing', 
+                                    value: data.eco_friendly_manufacturing,
+                                    format: (v) => v
+                                },
+                                { 
+                                    icon: 'cloud', 
+                                    label: 'Carbon Footprint (MT)', 
+                                    value: data.carbon_footprint_mt,
+                                    format: (v) => Number(v).toLocaleString(undefined, {maximumFractionDigits: 2})
+                                },
+                                { 
+                                    icon: 'tint', 
+                                    label: 'Water Usage (L)', 
+                                    value: data.water_usage_liters,
+                                    format: (v) => Number(v).toLocaleString(undefined, {maximumFractionDigits: 2})
+                                },
+                                { 
+                                    icon: 'recycle', 
+                                    label: 'Recycling Programs', 
+                                    value: data.recycling_programs,
+                                    format: (v) => v
+                                },
+                                { 
+                                    icon: 'tags', 
+                                    label: 'Product Lines', 
+                                    value: data.product_lines,
+                                    format: (v) => Number(v).toLocaleString()
+                                },
+                                { 
+                                    icon: 'dollar-sign', 
+                                    label: 'Avg. Price (USD)', 
+                                    value: data.average_price_usd,
+                                    format: (v) => `$${Number(v).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+                                }
+                            ];
+
+                            infoItems.forEach(item => {
+                                if (item.value !== undefined && item.value !== null) {
+                                    additionalInfo.append(`
+                                        <tr>
+                                            <td>
+                                                <span class="icon-circle">
+                                                    <i class="fas fa-${item.icon}"></i>
+                                                </span>
+                                                ${item.label}
+                                            </td>
+                                            <td>${item.format(item.value)}</td>
+                                        </tr>
+                                    `);
+                                }
+                            });
+                            
+                            $('#brandDetails').removeClass('d-none');
+                            $('#quickStats').removeClass('d-none');
+                            
+                            fetchSimilarBrands(selectedBrand);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error loading brand details');
+                        })
+                        .finally(() => {
+                            $('#loadingSpinner').hide();
+                        });
+                } else {
+                    $('#brandDetails').addClass('d-none');
+                    $('#quickStats').addClass('d-none');
+                }
+            });
+        });
+
+        function fetchSimilarBrands(brandName) {
+            fetch(`/api/similar-brands/${encodeURIComponent(brandName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const similarBrandsContainer = document.getElementById('similarBrandsContainer');
+                    if (data && data.length > 0) {
+                        let html = '<div class="list-group">';
+                        data.forEach(brand => {
+                            html += `
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">${brand.brand_name}</h6>
+                                            <small>Sustainability Score: ${brand.sustainability_score.toFixed(2)}</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-success" 
+                                                onclick="window.location.href='/compare/${encodeURIComponent(brandName)}/${encodeURIComponent(brand.brand_name)}'">
+                                            <i class="fas fa-balance-scale"></i> Compare
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                        similarBrandsContainer.innerHTML = html;
+                    } else {
+                        similarBrandsContainer.innerHTML = `
+                            <div class="alert alert-info">
+                                No similar brands found.
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('similarBrandsContainer').innerHTML = `
+                        <div class="alert alert-danger">
+                            Error loading similar brands.
+                        </div>
+                    `;
+                });
+        }
+
+        function updateBrandInfo(brandName) {
+            if (!brandName) return; // Skip if no brand is selected
+            
+            // Update brand details
+            fetch(`/api/brand/${encodeURIComponent(brandName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update brand info display
+                    document.getElementById('brandInfo').innerHTML = `
+                        <h5>${data.brand_name}</h5>
+                        <p>Sustainability Score: ${data.sustainability_score}</p>
+                        <p>Carbon Footprint: ${data.carbon_footprint_mt} MT</p>
+                        <p>Water Usage: ${data.water_usage_liters} L</p>
+                        <p>Product Lines: ${data.product_lines}</p>
+                        <p>Average Price: $${data.average_price_usd}</p>
+                    `;
+                    
+                    // Fetch and display similar brands
+                    fetchSimilarBrands(brandName);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('brandInfo').innerHTML = `
+                        <div class="alert alert-danger">
+                            Error loading brand information.
+                        </div>
+                    `;
+                });
+        }
+
+        // Enable/disable calculator button based on brand selection
+        document.getElementById('brandSelect').addEventListener('change', function() {
+            const calculatorBtn = document.getElementById('calculatorBtn');
+            calculatorBtn.disabled = !this.value;
+            
+            // Store the selected brand in localStorage when it changes
+            if (this.value) {
+                localStorage.setItem('selectedBrand', this.value);
+            } else {
+                localStorage.removeItem('selectedBrand');
+            }
+        });
+
+        // Function to redirect to calculator page with selected brand
+        function redirectToCalculator() {
+            const brandSelect = document.getElementById('brandSelect');
+            const selectedBrand = brandSelect.value;
+            if (selectedBrand) {
+                window.location.href = `/impact-calculator/${encodeURIComponent(selectedBrand)}`;
+            }
+        }
+    </script>
+
+    <style>
+        .btn-success:disabled {
+            background-color: #4ade80 !important;
+            opacity: 0.7;
+        }
+
+        .btn-success:hover {
+            background-color: #22c55e !important;
+        }
+
+        .form-select {
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            padding: 0.625rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            border-color: #16a34a;
+            box-shadow: 0 0 0 0.2rem rgba(22, 163, 74, 0.25);
+        }
+
+        .card {
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</body>
+</html> 

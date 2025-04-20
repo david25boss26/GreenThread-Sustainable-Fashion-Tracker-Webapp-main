@@ -1,0 +1,607 @@
+:root {
+    --primary-green: #16a34a;
+    --primary-dark: #15803d;
+    --primary-light: #22c55e;
+    --background-light: #f0fdf4;
+    --background-medium: #dcfce7;
+    --text-primary: #166534;
+    --text-secondary: #15803d;
+}
+
+body {
+    background-color: var(--background-light);
+}
+
+.navbar {
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary-green)) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(21, 128, 61, 0.05);
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.sustainability-score {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    padding: 1.5rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    border-radius: 1rem;
+    background: linear-gradient(145deg, #ffffff, var(--background-color));
+    box-shadow: 
+        0 4px 6px -1px rgba(21, 128, 61, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+.score-high {
+    background: linear-gradient(145deg, #ecfdf5, #d1fae5);
+    color: var(--primary-dark);
+    border: 1px solid rgba(21, 128, 61, 0.2);
+}
+
+.score-medium {
+    background: linear-gradient(145deg, #fefce8, #fef9c3);
+    color: #854d0e;
+    border: 1px solid rgba(133, 77, 14, 0.2);
+}
+
+.score-low {
+    background: linear-gradient(145deg, #fef2f2, #fee2e2);
+    color: #991b1b;
+    border: 1px solid rgba(153, 27, 27, 0.2);
+}
+
+.list-group-item {
+    border: none;
+    margin-bottom: 0.5rem;
+    background-color: var(--background-light);
+    border-radius: 0.5rem !important;
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.list-group-item h6 {
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.list-group-item small {
+    color: var(--text-secondary);
+}
+
+.btn-outline-success {
+    border-color: var(--primary-green);
+    color: var(--primary-green);
+}
+
+.btn-outline-success:hover {
+    background-color: var(--primary-green);
+    color: white;
+}
+
+.text-muted {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+#debug-info {
+    margin-bottom: 20px;
+}
+
+#debug-info pre {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+.stat-card {
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(135deg, var(--background-light) 0%, var(--background-medium) 100%);
+    border: 1px solid rgba(21, 128, 61, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary-light));
+    opacity: 0.8;
+}
+
+.info-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    flex: 0 0 auto; /* Prevent label from growing */
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+@media (max-width: 992px) {
+    .stat-card {
+        min-height: 120px;
+    }
+
+    .sustainability-score {
+        font-size: 1.5rem;
+        padding: 1.25rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .stat-card {
+        min-height: 100px;
+    }
+}
+
+/* Stats and Metrics */
+.stat-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-column {
+    flex: 1;
+    width: 50%; /* Ensure equal width */
+}
+
+/* Make both stat cards identical */
+.stat-card {
+    background: linear-gradient(135deg, var(--background-light) 0%, var(--background-medium) 100%);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    height: 140px; /* Fixed height instead of min-height */
+    border: 1px solid rgba(21, 128, 61, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    flex: 0 0 auto; /* Prevent label from growing */
+}
+
+/* Make both values identical in structure */
+.stat-value, 
+.sustainability-score {
+    flex: 1;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #ffffff, #f0fdf4);
+    border-radius: 1rem;
+    border: 1px solid rgba(21, 128, 61, 0.15);
+    box-shadow: 
+        0 4px 6px -1px rgba(21, 128, 61, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stat-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .stat-column {
+        width: 100%;
+    }
+
+    .stat-card {
+        height: 120px;
+    }
+
+    .stat-value, 
+    .sustainability-score {
+        font-size: 1.5rem;
+        padding: 0.5rem;
+    }
+}
+
+/* Enhanced stat cards */
+.stat-card {
+    background: linear-gradient(135deg, var(--background-light) 0%, var(--background-medium) 100%);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    height: 150px;
+    border: 1px solid rgba(21, 128, 61, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary-light));
+    opacity: 0.8;
+}
+
+/* Enhanced sustainability score */
+.sustainability-score {
+    background: linear-gradient(145deg, #ffffff, #f0fdf4);
+    border: 1px solid rgba(21, 128, 61, 0.15);
+    transition: all 0.3s ease;
+}
+
+.sustainability-score:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 12px -2px rgba(21, 128, 61, 0.15),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8);
+}
+
+/* Enhanced table styling */
+.table {
+    margin-bottom: 0;
+}
+
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.icon-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(21, 128, 61, 0.1);
+    margin-right: 0.75rem;
+}
+
+.icon-circle i {
+    color: var(--primary-dark);
+    font-size: 0.875rem;
+}
+
+/* Quick Stats Card Styling */
+#quickStats {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#quickStats .stat-card {
+    height: auto;
+    min-height: 100px;
+    padding: 1.25rem;
+}
+
+#quickStats .info-label {
+    margin-bottom: 0.5rem;
+}
+
+/* Badge Styling */
+#quickStats .badge {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #quickStats .stat-card {
+        min-height: 80px;
+    }
+    
+    #quickStats .badge {
+        font-size: 0.875rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+
+/* Remove conflicting styles */
+.stat-card {
+    height: auto;  /* Remove fixed height */
+    min-height: 100px;
+}
+
+/* Update form elements */
+.form-select:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 0.25rem rgba(21, 128, 61, 0.25);
+}
+
+/* Update badges */
+.badge.bg-success {
+    background: linear-gradient(145deg, var(--primary-green), var(--primary-dark)) !important;
+}
+
+.badge.bg-primary {
+    background: linear-gradient(145deg, #3b82f6, #2563eb) !important;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(145deg, #f59e0b, #d97706) !important;
+}
+
+.badge.bg-info {
+    background: linear-gradient(145deg, #0ea5e9, #0284c7) !important;
+}
+
+/* Text colors */
+.text-success {
+    color: var(--primary-dark) !important;
+}
+
+.card-title {
+    color: var(--text-primary);
+}
+
+/* Hover effects */
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 12px -2px rgba(21, 128, 61, 0.15),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8);
+}
+
+/* Table styling */
+.table-hover tbody tr:hover {
+    background-color: var(--background-light);
+}
+
+/* Similar Brands Styling */
+.similar-brand-card {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: var(--background-light);
+    transition: all 0.3s ease;
+}
+
+.similar-brand-card:hover {
+    background-color: var(--background-medium);
+    transform: translateY(-2px);
+}
+
+.similar-brand-card h6 {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.similar-brand-card .btn-outline-success {
+    border-color: var(--primary-green);
+    color: var(--primary-green);
+}
+
+.similar-brand-card .btn-outline-success:hover {
+    background-color: var(--primary-green);
+    color: white;
+}
+
+/* Add these styles to your existing CSS */
+
+.comparison-metrics {
+    margin-top: 2rem;
+}
+
+.metric-item {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--background-light) 0%, var(--background-medium) 100%);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(21, 128, 61, 0.1);
+}
+
+.metric-item i {
+    color: var(--primary-dark);
+}
+
+/* Comparison specific styles */
+.comparison-container {
+    margin-top: 2rem;
+}
+
+.comparison-title {
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.vs-badge {
+    background: var(--primary-dark);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -1rem;
+    z-index: 1;
+}
+
+/* Brand Actions Styling */
+.brand-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.brand-actions .btn {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.brand-actions .btn-outline-success:hover {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+    color: white;
+}
+
+.brand-actions .btn-success {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+}
+
+.brand-actions .btn-success:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+/* Add smooth scrolling to the page */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Add loading animation */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    color: var(--primary-green);
+}
+
+/* Graph styling */
+.graph-container {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.graph-container img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.graph-container h6 {
+    color: #16a34a;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* Add responsive padding */
+@media (max-width: 768px) {
+    .graph-container {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+}
+
+.btn-outline-info {
+    color: #0dcaf0;
+    border-color: #0dcaf0;
+}
+
+.btn-outline-info:hover {
+    color: #fff;
+    background-color: #0dcaf0;
+    border-color: #0dcaf0;
+}
+
+.modal-title {
+    color: #16a34a;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.modal .card {
+    border: 1px solid rgba(0,0,0,.125);
+    box-shadow: 0 2px 4px rgba(0,0,0,.05);
+}
+
+.modal .card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+}
+
+.modal-content {
+    border-radius: 0.5rem;
+}
+
+.card {
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.list-unstyled li {
+    margin-bottom: 0.5rem;
+}
+
+.text-success {
+    color: #16a34a !important;
+} 

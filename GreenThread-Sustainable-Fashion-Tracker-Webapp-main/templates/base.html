@@ -1,0 +1,119 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Sustainability</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand text-success" href="/">
+                <i class="fas fa-leaf me-2"></i>
+                Brand Explorer
+            </a>
+            
+            <!-- Remove or comment out this section from the navigation bar -->
+            <!--
+            <div class="ms-auto d-flex align-items-center">
+                <div class="brand-select-container me-2">
+                    <select class="form-select" id="navBrandSelect">
+                        <option value="">Choose a brand</option>
+                        {% for brand in brands %}
+                            <option value="{{ brand.brand_name }}">{{ brand.brand_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button class="btn btn-success calculator-btn" 
+                        onclick="redirectToCalculator()" 
+                        id="navCalculatorBtn" 
+                        disabled>
+                    <i class="fas fa-calculator me-2"></i>
+                    Impact Calculator
+                </button>
+            </div>
+            -->
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    // Enable/disable calculator button based on brand selection
+    document.getElementById('navBrandSelect').addEventListener('change', function() {
+        const calculatorBtn = document.getElementById('navCalculatorBtn');
+        calculatorBtn.disabled = !this.value;
+    });
+
+    // Function to redirect to calculator page with selected brand
+    function redirectToCalculator() {
+        const brandSelect = document.getElementById('navBrandSelect');
+        const selectedBrand = brandSelect.value;
+        if (selectedBrand) {
+            window.location.href = `/impact-calculator/${encodeURIComponent(selectedBrand)}`;
+        }
+    }
+    </script>
+
+    <style>
+    .navbar {
+        padding: 1rem 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .brand-select-container {
+        width: 200px;
+    }
+
+    .form-select {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .calculator-btn {
+        background-color: #4ade80 !important;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        color: white;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .calculator-btn:hover {
+        background-color: #22c55e !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(74, 222, 128, 0.2);
+    }
+
+    .calculator-btn:disabled {
+        background-color: #a7f3d0 !important;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+        .brand-select-container {
+            width: 150px;
+        }
+        
+        .calculator-btn {
+            padding: 0.5rem;
+        }
+    }
+    </style>
+</body>
+</html> 

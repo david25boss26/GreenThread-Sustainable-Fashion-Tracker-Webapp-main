@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-success mb-4">
+                    <i class="fas fa-calculator me-2"></i>
+                    Sustainability Impact Calculator
+                </h5>
+                
+                <!-- Brand Selection -->
+                <div class="form-group mb-4">
+                    <label for="brandSelect" class="form-label">Select Brand</label>
+                    <select class="form-select" id="brandSelect" onchange="updateBrandInfo(this.value)">
+                        <option value="">Choose a brand...</option>
+                        {% for brand in brands %}
+                            <option value="{{ brand.brand_name }}">{{ brand.brand_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Calculator Container -->
+                <div class="calculator-container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="price-control mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label class="form-label">Price Adjustment ($)</label>
+                                    <span class="price-display">
+                                        Current: $<span id="currentPriceDisplay">0</span>
+                                    </span>
+                                </div>
+                                <input type="range" 
+                                       class="form-range custom-slider" 
+                                       id="priceSlider" 
+                                       min="0" 
+                                       max="200" 
+                                       step="1">
+                                <div class="d-flex justify-content-between mt-2">
+                                    <span class="new-price">
+                                        New Price: $<span id="newPriceDisplay" class="text-success">0</span>
+                                    </span>
+                                    <span class="price-change">
+                                        Change: <span id="priceChangeDisplay">0%</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="impact-results" id="impactResults">
+                                <!-- Results will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include the calculator.js script -->
+<script src="{{ url_for('static', filename='js/calculator.js') }}"></script>
+{% endblock %} 

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Comparison - Sustainable Brands Analytics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-success">
+        <div class="container">
+            <span class="navbar-brand">
+                <i class="fas fa-leaf me-2"></i>
+                <strong>Brand Comparison</strong>
+            </span>
+            <a href="/" class="btn btn-outline-light">
+                <i class="fas fa-arrow-left me-2"></i>
+                Back to Analytics
+            </a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ brand1.brand_name }}</h4>
+                        <div class="sustainability-score score-high mb-4">
+                            {{ "%.2f"|format(brand1.sustainability_score) }}
+                        </div>
+                        <div class="comparison-metrics">
+                            <div class="metric-item">
+                                <i class="fas fa-cloud me-2"></i>
+                                Carbon Footprint: {{ "%.2f"|format(brand1.carbon_footprint_mt) }} MT
+                            </div>
+                            <div class="metric-item">
+                                <i class="fas fa-tint me-2"></i>
+                                Water Usage: {{ "%.2f"|format(brand1.water_usage_liters) }} L
+                            </div>
+                            <div class="metric-item">
+                                <i class="fas fa-tags me-2"></i>
+                                Product Lines: {{ brand1.product_lines }}
+                            </div>
+                            <div class="metric-item">
+                                <i class="fas fa-dollar-sign me-2"></i>
+                                Avg. Price: ${{ "%.2f"|format(brand1.average_price_usd) }}
+                            </div>
+                            <div class="metric-item">
+                                <i class="fas fa-chart-line me-2"></i>
+                                Market Trend: {{ brand1.market_trend }}
+                            </div>
+                            <div class="metric-item">
+                                <i class="fas fa-certificate me-2"></i>
+                                Certifications: {{ brand1.certifications_encoded }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ brand2.brand_name }}</h4>
+                        <div class="sustainability-score score-high mb-4">
+                            {{ "%.2f"|format(brand2.sustainability_score) }}
+                        </div>
+                        <div class="comparison-metrics">
+                            <div class="metric-item">
+                                <i class="fas fa-cloud me-2"></i>
+                                Carbon Footprint: {{ "%.2f"|format(brand2.carbon_footprint_mt) }} MT
+                            </div>
+                            <div class="metric-item">
+                                <i class="fas fa-tint me-2"></i>
+                                Water Usage: {{ "%.2f"|format(brand2.water_usage_liters) }} L
+                            </div>
+                            <div class="metric-item">
+                                <i class="fas fa-tags me-2"></i>
+                                Product Lines: {{ brand2.product_lines }}
+                            </div>
+                            <div class="metric-item">
+                                <i class="fas fa-dollar-sign me-2"></i>
+                                Avg. Price: ${{ "%.2f"|format(brand2.average_price_usd) }}
+                            </div>
+                            <div class="metric-item">
+                                <i class="fas fa-chart-line me-2"></i>
+                                Market Trend: {{ brand2.market_trend }}
+                            </div>
+                            <div class="metric-item">
+                                <i class="fas fa-certificate me-2"></i>
+                                Certifications: {{ brand2.certifications_encoded }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-success mb-4">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            Visual Comparison
+                        </h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="graph-container">
+                                    <h6 class="text-center mb-3">Sustainability Score</h6>
+                                    <img src="data:image/png;base64,{{ graphs.sustainability_score }}" 
+                                         class="img-fluid" 
+                                         alt="Sustainability Score Comparison"
+                                         style="max-height: 400px; width: auto;">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="graph-container">
+                                    <h6 class="text-center mb-3">Environmental Impact</h6>
+                                    <img src="data:image/png;base64,{{ graphs.environmental_impact }}" 
+                                         class="img-fluid" 
+                                         alt="Environmental Impact Comparison"
+                                         style="max-height: 400px; width: auto;">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="graph-container">
+                                    <h6 class="text-center mb-3">Business Metrics</h6>
+                                    <img src="data:image/png;base64,{{ graphs.business_metrics }}" 
+                                         class="img-fluid" 
+                                         alt="Business Metrics Comparison"
+                                         style="max-height: 400px; width: auto;">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="graph-container">
+                                    <h6 class="text-center mb-3">Overall Brand Comparison</h6>
+                                    <img src="data:image/png;base64,{{ graphs.radar_chart }}" 
+                                         class="img-fluid" 
+                                         alt="Brand Comparison Radar Chart"
+                                         style="max-height: 400px; width: auto;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
